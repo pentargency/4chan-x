@@ -395,7 +395,8 @@ QR =
     if file
       {type} = file
       blob = new Blob [file], {type}
-      blob.name = "file.#{QR.extensionFromType[type] or 'jpg'}"
+      @ext = QR.extensionFromType[type] or 'jpg'
+      blob.name = Conf['pastedname'].replace(/%(?:ext|%)/g, (x) => ({'%ext': @ext, '%%': '%'})[x])
       QR.open()
       QR.handleFiles [blob]
       $.addClass QR.nodes.el, 'dump'
@@ -414,7 +415,8 @@ QR =
         for i in [0...bstr.length]
           arr[i] = bstr.charCodeAt(i)
         blob = new Blob [arr], {type: m[1]}
-        blob.name = "file.#{m[2]}"
+        @ext = m[2]
+        blob.name = Conf['pastedname'].replace(/%(?:ext|%)/g, (x) => ({'%ext': @ext, '%%': '%'})[x])
         QR.handleFiles [blob]
       else if /^https?:\/\//.test src
         QR.handleUrl src
